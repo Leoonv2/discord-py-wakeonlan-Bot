@@ -1,0 +1,5 @@
+asyncio
+discord
+pyotp
+qrcode
+requests
