@@ -1,43 +1,21 @@
-
-
 import subprocess
-
 import discord
 import pyotp
 import qrcode
-
-
 from discord.ext import commands
 
-
+prefix = "!"
 addr = "MAC Address" # Enter your PC MAC Address here
+secret_key = "" # define an secret key here
 
+uri = pyotp.totp.TOTP(secret_key).provisioning_uri( name='Discord Wake On Lan Bot', issuer_name='Discord Bot' )
 
-
-def wol():
-    subprocess.call(["wakeonlan", str(addr)], shell=False)  
-
-
-    
-
-secret_key = "" # define an random key here
-
-uri = pyotp.totp.TOTP(secret_key).provisioning_uri(
-    name='Discord Wake On Lan Bot',
-    issuer_name='Discord Bot')
-
-img = qrcode.make(uri) #after first run, you can delete these line
-img.save('qrcode.png') #after first run, you can delete these line
-
-
+img = qrcode.make(uri) # scan the qr code with google authenticator app and
+img.save('qrcode.png') # after first run, you can delete these lines
 
 totp = pyotp.TOTP(secret_key)
 
-
-
-
-
-client = commands.Bot(command_prefix='!', intents=discord.Intents.all())
+client = commands.Bot(command_prefix=prefix, intents=discord.Intents.all())
 
 @client.command()
 async def wake(ctx, message=None):
@@ -45,7 +23,7 @@ async def wake(ctx, message=None):
         
         subprocess.call(["wakeonlan", str(addr)], shell=False)  # you need to sudo apt-get install wakeonlan on your raspberry pi / other
 
-        await ctx.send('Magic Packet sent!')
+        await ctx.send('Wake On Lan Packet sent!')
 
     elif message:
         
